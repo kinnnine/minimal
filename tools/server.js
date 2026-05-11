@@ -123,10 +123,11 @@ server.listen(port, (error) => {
     const url = `http://localhost:${port}`;
     console.log(`Serving '${folder}' at ${url}...`);
     if (browse) {
-        let command = "xdg-open";
+      let command = "xdg-open";
         switch (process.platform) {
             case "darwin": command = "open"; break;
             case "win32": command = 'start ""'; break;
+            case "linux": break;
             default: throw new Error(`Unsupported platform '${process.platform}.`);
         }
         child_process.exec(`${command} "${url.replace(/"/g, '\\"')}"`);
