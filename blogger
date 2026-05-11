@@ -55,7 +55,7 @@ update() {
     echo "Updated."
 }
 
-deploy() {
+task_shim() {
     blog_folder="$(realpath "$(pwd)")"
 
     [ -f index.md ] && fail \
@@ -68,7 +68,7 @@ deploy() {
         "not a blog folder from the minimal's source code, aborted" 7
 
     cd "$blog_folder"/../../ || fail "changing into parent directory failed, weird" 8
-    ./task deploy
+    ./task $1
 }
 
 self_install() {
@@ -84,7 +84,8 @@ self_install() {
 case "${command}" in
     "create") create;;
     "update") update;;
-    "deploy") deploy;;
+    "start") task_shim start;;
+    "deploy") task_shim deploy;;
     "install") self_install;;
     *)
         echo;
@@ -92,6 +93,7 @@ case "${command}" in
         echo
         echo "    create      Create a new post"
         echo "    update      Update a post with new date and timestamp"
+        echo "    start       Build and launch simple local web server"
         echo "    deploy      Build and deploy to production environment"
         echo "    install     Install this script into user's .local/bin directory"
         echo;
