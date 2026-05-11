@@ -1,20 +1,24 @@
 {
-  "theme":       "developer",
-  "name":        "kinnnine",
-  "bio":         "Supphakit Duanghoy, 21.",
-  "description": "I like to mess around with tech stuffs and develop a software.",
-  "host":        "https://kinnnine.github.io",
-  "analytics":   "<script type=\"text/javascript\"></script>",
+  "theme": "developer",
+  "name": "kinnnine",
+  "bio": "Supphakit Duanghoy, 21.",
+  "description": "Like to mess around with tech stuffs and develop a software.",
+  "host": "https://interpreterhell.nekoweb.org",
+  "analytics": "",
   "feeds": [
-    { "type": "application/atom+xml", "url": "{{{root}}}blog/feed.atom"},
-    { "type": "application/rss+xml",  "url": "{{{root}}}blog/feed.rss"}
+    { "type": "application/atom+xml", "url": "{{{root}}}blog/feed.atom" },
+    { "type": "application/rss+xml", "url": "{{{root}}}blog/feed.rss" }
   ],
   "links": [
-    { "name": "GitHub",  "symbol": "&#xe237;", "url": "https://github.com/kinnnine" },
-    { "name": "RSS",     "symbol": "&#xe271;", "url": "{{{root}}}blog/feed.atom" }
+    {
+      "name": "GitHub",
+      "symbol": "&#xe237;",
+      "url": "https://github.com/kinnnine"
+    },
+    { "name": "RSS", "symbol": "&#xe271;", "url": "{{{root}}}blog/feed.atom" }
   ],
   "pages": [
-    { "name": "Blog",     "url": "{{{root}}}",         "visible": true },
+    { "name": "Blog", "url": "{{{root}}}", "visible": true },
     { "name": "Projects", "url": "{{{root}}}projects", "visible": false }
   ]
 }

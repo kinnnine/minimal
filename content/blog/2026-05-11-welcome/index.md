@@ -1,7 +1,7 @@
 ---
 state:      post
 title:      Welcome
-date:       2017-01-01 12:00:00 -08:00
+date:       2026-05-11 13:02:13 +07:00
 ---
 
 This is an example blog post.
