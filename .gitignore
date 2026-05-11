@@ -2,6 +2,7 @@
 /dist/
 /app
 /debug
+/deploy/*.cfg
 /node_modules
 /package-lock.json
 *.pyc
