@@ -1,0 +1,78 @@
+#!/bin/bash
+
+if [ -f "${BASH_SOURCE[0]}.cfg" ]; then
+    source "${BASH_SOURCE[0]}.cfg"
+fi
+
+clean() {
+    rm -rf temp import.zip
+}
+
+fail() {
+    clean
+    printf 'Error: %s.\n' "$1"
+    exit $2
+}
+
+deploy() {
+    api_big='https://nekoweb.org/api/files/big/create'
+    api_append='https://nekoweb.org/api/files/big/append'
+    api_import='https://nekoweb.org/api/files/import/'
+
+    [ ! -d build ] && fail "build directory not found, run ./task build first" 1
+    (mkdir temp && cp -rv build temp/"$SITE" && cd temp && zip -r ../import.zip .)
+
+    big_ret=$(curl -s --request GET \
+            --url $api_big \
+            --header "Authorization: $API" | jq -r '.id'
+            )
+    if [[ ${#big_ret} -gt 3 ]]; then
+        big_id=$big_ret
+    else
+        fail "request big id failed, possibility ratelimited or network error" 2
+    fi
+
+    append_ret=$(curl -s --request POST \
+                --url $api_append \
+                --header "Authorization: $API" \
+                --form id=$big_id \
+                --form file=@import.zip
+                )
+    if [[ $append_ret != "Appended" ]]; then
+        fail "append failed, possibility ratelimited or network error" 3
+    fi
+
+    import_ret=$(curl -s --request POST \
+                --url $api_import$big_id \
+                --header "Authorization: $API"
+                )
+    if [[ $import_ret != "Imported" ]]; then
+        fail "import failed, possibility ratelimited or network error" 4
+    fi
+
+    echo "Deployed."
+    clean
+}
+
+ratelimit() {
+    curl -s --request GET \
+      --url https://nekoweb.org/api/files/limits \
+      --header "Authorization: ${API}" | jq '.'
+}
+
+console() {
+    url="https://nekoweb.org/dashboard"
+    case "$(uname -s)" in
+        Darwin*) open ${url};;
+        Linux*) xdg-open ${url};;
+        MINGW*) start "" ${url};;
+    esac
+}
+
+command="$1"
+shift
+case "${command}" in
+    "deploy") deploy $@;;
+    "ratelimit") ratelimit;;
+    "console") console;;
+esac
