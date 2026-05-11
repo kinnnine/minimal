@@ -27,7 +27,7 @@ create() {
 
     cat << EOF > "$folder"/index.md
 ---
-state:      post
+state:      draft
 title:      $full_title
 date:       $date $time $time_offset
 ---
