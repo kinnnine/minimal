@@ -1,21 +1,20 @@
 {
-  "theme":       "default",
-  "name":        "John Smith",
-  "bio":         "I explore, I work, and I have hobbies.",
-  "description": "Detailed description for search engines.",
-  "host":        "https://lutzroeder.github.io/minimal/default",
+  "theme":       "developer",
+  "name":        "kinnnine",
+  "bio":         "Supphakit Duanghoy, 21.",
+  "description": "I like to mess around with tech stuffs and develop a software.",
+  "host":        "https://kinnnine.github.io",
   "analytics":   "<script type=\"text/javascript\"></script>",
   "feeds": [
     { "type": "application/atom+xml", "url": "{{{root}}}blog/feed.atom"},
     { "type": "application/rss+xml",  "url": "{{{root}}}blog/feed.rss"}
   ],
   "links": [
-    { "name": "Twitter", "symbol": "&#xe286;", "url": "https://www.twitter.com/lutzroeder" },
-    { "name": "GitHub",  "symbol": "&#xe237;", "url": "https://github.com/lutzroeder" },
+    { "name": "GitHub",  "symbol": "&#xe237;", "url": "https://github.com/kinnnine" },
     { "name": "RSS",     "symbol": "&#xe271;", "url": "{{{root}}}blog/feed.atom" }
   ],
   "pages": [
     { "name": "Blog",     "url": "{{{root}}}",         "visible": true },
-    { "name": "Projects", "url": "{{{root}}}projects", "visible": true }
+    { "name": "Projects", "url": "{{{root}}}projects", "visible": false }
   ]
 }
