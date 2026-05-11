@@ -3,8 +3,8 @@
 command="$1" && shift
 
 fail() {
-    printf "Error: %s.\n" "$1"
-    exit $2
+    printf "Error: %s\n" "$1"
+    exit "$2"
 }
 
 create() {
@@ -24,9 +24,8 @@ create() {
     folder="$date"-"$short_title"
 
     mkdir "$folder"
-    cd "$folder" || fail "changing into directory failed, weird" 1
 
-    cat << EOF > index.md
+    cat << EOF > "$folder"/index.md
 ---
 state:      post
 title:      $full_title
@@ -40,8 +39,9 @@ EOF
 update() {
     blog_folder_path="$(pwd)"
     blog_folder_name="${blog_folder_path##*/}"
+
     [ ! -f "$blog_folder_path"/index.md ] && fail \
-        "make sure you're inside the valid blog post directory" 2
+        "make sure you're inside the valid blog post directory." 2
 
     title="${blog_folder_name##*-}"
 
@@ -50,7 +50,7 @@ update() {
     time_offset=$(date +%:z)
 
     sed -i "4c date:       $date $time $time_offset" index.md
-    cd .. && mv "$blog_folder_name" "$date-$title" 2>/dev/null
+    mv ../"$blog_folder_name" ../"$date-$title" 2>/dev/null
 
     echo "Updated."
 }
@@ -59,16 +59,18 @@ task_shim() {
     blog_folder="$(realpath "$(pwd)")"
 
     [ -f index.md ] && fail \
-        "change your current directory into the root of the blog folder first" 5
+        "change your current directory into the root of the blog folder first." 5
 
     [ ! -d "$blog_folder"/../blog ] && fail \
-        "not a blog folder, aborted" 6
+        "not a blog folder, aborted." 6
 
     [ ! -f "$blog_folder"/../../task ] && fail \
-        "not a blog folder from the minimal's source code, aborted" 7
+        "not a blog folder from the minimal's source code, aborted." 7
 
-    cd "$blog_folder"/../../ || fail "changing into parent directory failed, weird" 8
-    ./task $1
+    cd "$blog_folder"/../../ || fail \
+        "changing into parent directory failed, invalid source code?" 8
+
+    ./task "$1"
 }
 
 self_install() {
