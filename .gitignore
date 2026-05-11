@@ -2,7 +2,6 @@
 /dist/
 /app
 /debug
-/deploy/*.cfg
 /node_modules
 /package-lock.json
 *.pyc
@@ -10,3 +9,4 @@
 .DS_Store?
 ._*
 Thumbs.db
+*.zip
