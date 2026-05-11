@@ -1,0 +1,99 @@
+#!/bin/bash
+
+command="$1" && shift
+
+fail() {
+    printf "Error: %s.\n" "$1"
+    exit $2
+}
+
+create() {
+    echo \
+        "Insert a short title (uppercase, spaces and special chars is not allowed):"
+    read -r -e -p "> " short_title
+    echo \
+        "Insert a full title for the post:"
+    read -r -e -p "> " full_title
+
+    [ -z "$short_title" ] && short_title="post"
+    [ -z "$full_title" ] && full_title="My new post."
+
+    date=$(date +%Y-%m-%d)
+    time=$(date +%H:%M:%S)
+    time_offset=$(date +%:z)
+    folder="$date"-"$short_title"
+
+    mkdir "$folder"
+    cd "$folder" || fail "changing into directory failed, weird" 1
+
+    cat << EOF > index.md
+---
+state:      post
+title:      $full_title
+date:       $date $time $time_offset
+---
+
+EOF
+    echo "Created."
+}
+
+update() {
+    blog_folder_path="$(pwd)"
+    blog_folder_name="${blog_folder_path##*/}"
+    [ ! -f "$blog_folder_path"/index.md ] && fail \
+        "make sure you're inside the valid blog post directory" 2
+
+    title="${blog_folder_name##*-}"
+
+    date=$(date +%Y-%m-%d)
+    time=$(date +%H:%M:%S)
+    time_offset=$(date +%:z)
+
+    sed -i "4c date:       $date $time $time_offset" index.md
+    cd .. && mv "$blog_folder_name" "$date-$title" 2>/dev/null
+
+    echo "Updated."
+}
+
+deploy() {
+    blog_folder="$(realpath "$(pwd)")"
+
+    [ -f index.md ] && fail \
+        "change your current directory into the root of the blog folder first" 5
+
+    [ ! -d "$blog_folder"/../blog ] && fail \
+        "not a blog folder, aborted" 6
+
+    [ ! -f "$blog_folder"/../../task ] && fail \
+        "not a blog folder from the minimal's source code, aborted" 7
+
+    cd "$blog_folder"/../../ || fail "changing into parent directory failed, weird" 8
+    ./task deploy
+}
+
+self_install() {
+    script_path=$(readlink -f "${BASH_SOURCE[0]}")
+    install_path="$HOME/.local/bin"
+    install -m 755 "$script_path" "$install_path"
+
+    [ ! -f "$install_path"/"$(basename "$0")" ] && fail \
+        "install failed, is the path exists and valid?" 3
+    echo "Installed."
+}
+
+case "${command}" in
+    "create") create;;
+    "update") update;;
+    "deploy") deploy;;
+    "install") self_install;;
+    *)
+        echo;
+        echo "Usage: $(tty -s && tput bold)$(basename "$0")$(tty -s && tput sgr0) <command>"
+        echo
+        echo "    create      Create a new post"
+        echo "    update      Update a post with new date and timestamp"
+        echo "    deploy      Build and deploy to production environment"
+        echo "    install     Install this script into user's .local/bin directory"
+        echo;
+    ;;
+esac
