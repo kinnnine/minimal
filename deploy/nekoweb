@@ -15,12 +15,23 @@ fail() {
 }
 
 deploy() {
+    api_delete='https://nekoweb.org/api/files/delete'
     api_big='https://nekoweb.org/api/files/big/create'
     api_append='https://nekoweb.org/api/files/big/append'
     api_import='https://nekoweb.org/api/files/import/'
 
     [ ! -d build ] && fail "build directory not found, run ./task build first" 1
     (mkdir temp && cp -rv build temp/"$SITE" && cd temp && zip -r ../import.zip .)
+
+    delete_blog_ret=$(curl -s --request POST \
+            --url $api_delete \
+            --header "Authorization: $API" \
+            --header 'content-type: application/x-www-form-urlencoded' \
+            --data pathname=/"$SITE"/blog
+            )
+    if [[ $delete_blog_ret != "File/folder deleted" ]]; then
+        fail "delete blog folder on nekoweb failed, possibility ratelimited or network error" 2
+    fi
 
     big_ret=$(curl -s --request GET \
             --url $api_big \
@@ -29,7 +40,7 @@ deploy() {
     if [[ ${#big_ret} -gt 3 ]]; then
         big_id=$big_ret
     else
-        fail "request big id failed, possibility ratelimited or network error" 2
+        fail "request big id failed, possibility ratelimited or network error" 3
     fi
 
     append_ret=$(curl -s --request POST \
@@ -39,7 +50,7 @@ deploy() {
                 --form file=@import.zip
                 )
     if [[ $append_ret != "Appended" ]]; then
-        fail "append failed, possibility ratelimited or network error" 3
+        fail "append failed, possibility ratelimited or network error" 4
     fi
 
     import_ret=$(curl -s --request POST \
@@ -47,7 +58,7 @@ deploy() {
                 --header "Authorization: $API"
                 )
     if [[ $import_ret != "Imported" ]]; then
-        fail "import failed, possibility ratelimited or network error" 4
+        fail "import failed, possibility ratelimited or network error" 5
     fi
 
     echo "Deployed."
