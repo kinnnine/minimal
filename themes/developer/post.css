@@ -29,7 +29,7 @@ body { max-width: 980px !important; margin: 80px auto 80px auto; padding: 0 50px
 .post .content table { border-collapse: collapse; border: 1px solid lightgray; }
 .post .content table thead { border-bottom: 1px solid lightgray; background-color: #f6f8fa; }
 .post .content table thead th { padding: 5px; border: 1px solid lightgray; }
-.post .content table tbody td { padding: 5px; }
+.post .content table tbody td { padding: 5px; border: 1px solid lightgray;}
 @media all and (max-width: 767px) {
 body { max-width: 100%; margin: 0 auto 0 auto; padding: 0; background-color: #fafbfc; }
 .header { background-color: #fafbfc; border-top: 0; border-left: 0; border-right: 0; border-radius: 0; padding: 10px 15px 10px 15px; }
